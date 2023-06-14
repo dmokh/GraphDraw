@@ -12,4 +12,4 @@ This program draw graphs by function (equation).
 Variable can be only x in first part of equation? and variable can be only y in second part, however variable can
 repeated any number of times.
 
-Program now can't read take of root, functions of sin, cos, log and etc.
+Program can't read take of root, functions of sin, cos, log and etc. now.
