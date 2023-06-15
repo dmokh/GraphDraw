@@ -1,87 +1,85 @@
 from utilites import *
 
 
-def count_equation(String_x):
-    i = 0
-    while i < len(String_x):
-        if String_x[i] == '-' and (i == 0 or String_x[i - 1] in op.keys()):
-            if i + 1 < len(String_x) and String_x[i + 1][0] != '-':
-                String_x[i + 1] = "-" + String_x[i + 1]
-                String_x.pop(i)
-                i = max(0, i - 2)
-            elif i + 1 < len(String_x):
-                String_x.pop(i)
-                i = max(0, i - 2)
-        i += 1
+def doOperation(x1, x2, operation, stack1):
+    if operation == "+":
+        stack1.append(x1 + x2)
+    elif operation == '*':
+        stack1.append(x1 * x2)
+    elif operation == '/':
+        stack1.append(x2 / x1)
+    elif operation == '-':
+        stack1.append(x2 - x1)
+    elif operation == '^':
+        try:
+            stack1.append(x2 ** x1)
+        except OverflowError:
+            print(f'{x2}^{x1}')
+    elif operation == 'u-':
+        stack1.append(-x1)
+
+
+def count_equation(equation):
+    # change string to list
+    if type(equation) != list:
+        equation = list(equation)
+
+    # parse
     stack1 = []
     stack2 = []
     now = ""
-    i = 0
-    while i < len(String_x):
-        n = String_x[i]
-        if n not in op.keys():
-            if n != ' ':
-                now += n
-        elif n != ' ':
+    mod_num = 0
+    for i in range(len(equation)):
+        n = equation[i]
+        if n not in op.keys() or (i > 0 and n == '-' and equation[i-1] == 'e'):
+            now += n
+        else:
             if now.isdigit() or (len(now) > 1 and now[1:].isdigit()):
                 stack1.append(int(now))
             elif isfloat(now) or (len(now) > 1 and isfloat(now[1:])):
                 stack1.append(float(now))
-            now = ""
+            now = ''
             if len(stack2) > 0:
-                while len(stack2) > 0 and op[n] <= op[stack2[-1]] and op[n] != 3 and op[stack2[-1]] != 3:
-                    x1 = stack1.pop(-1)
-                    x2 = stack1.pop(-1)
-                    if stack2[-1] == "+":
-                        stack1.append(x1 + x2)
-                    elif stack2[-1] == '*':
-                        stack1.append(x1 * x2)
-                    elif stack2[-1] == '/':
-                        stack1.append(x2 / x1)
-                    elif stack2[-1] == '-':
-                        stack1.append(x2 - x1)
-                    elif stack2[-1] == '^':
-                        stack1.append(x2**x1)
+                while len(stack2) > 0 and op[n] <= op[stack2[-1]] < op['(']:
+                    if stack2[-1] == 'u-':
+                        doOperation(stack1.pop(-1), None, stack2[-1], stack1)
+                    else:
+                        doOperation(stack1.pop(-1), stack1.pop(-1), stack2[-1], stack1)
                     stack2.pop(-1)
             if n == ')':
                 while stack2[-1] != '(':
-                    x1 = stack1.pop(-1)
-                    x2 = stack1.pop(-1)
-                    if stack2[-1] == "+":
-                        stack1.append(x1 + x2)
-                    elif stack2[-1] == '*':
-                        stack1.append(x1 * x2)
-                    elif stack2[-1] == '/':
-                        stack1.append(x2 / x1)
-                    elif stack2[-1] == '-':
-                        stack1.append(x2 - x1)
-                    elif stack2[-1] == '^':
-                        stack1.append(x2 ** x1)
+                    if stack2[-1] == 'u-':
+                        doOperation(stack1.pop(-1), None, stack2[-1], stack1)
+                    else:
+                        doOperation(stack1.pop(-1), stack1.pop(-1), stack2[-1], stack1)
                     stack2.pop(-1)
                 stack2.pop(-1)
+            elif n == '|':
+                if i > 0 and (equation[i-1].isdigit() or
+                              isfloat(equation[i-1]) or (len(equation[i-1]) > 1 and equation[i-1][0] == '-')):
+                    while stack2[-1] != '|':
+                        doOperation(stack1.pop(-1), stack1.pop(-1), stack2[-1], stack1)
+                        stack2.pop(-1)
+                    stack2.pop(-1)
+                    stack1[-1] = abs(stack1[-1])
+                else:
+                    stack2.append(n)
             else:
-                stack2.append(n)
-        i += 1
-    if now.isdigit():
+                if n == '-' and (i == 0 or equation[i-1] in op.keys()):
+                    stack2.append('u-')
+                else:
+                    stack2.append(n)
+    if now.isdigit() or (len(now) > 1 and now[1:].isdigit()):
         stack1.append(int(now))
-    elif isfloat(now):
+    elif isfloat(now) or (len(now) > 1 and isfloat(now[1:])):
         stack1.append(float(now))
     if now in op.keys():
         stack2.append(now)
-    while len(stack2) > 0 and len(stack1) > 1:
-        now = ""
-        x1 = stack1.pop(-1)
-        x2 = stack1.pop(-1)
-        if stack2[-1] == "+":
-            stack1.append(x1 + x2)
-        elif stack2[-1] == '*':
-            stack1.append(x1 * x2)
-        elif stack2[-1] == '/':
-            stack1.append(x2 / x1)
-        elif stack2[-1] == '-':
-            stack1.append(x2 - x1)
-        elif stack2[-1] == '^':
-            stack1.append(x2 ** x1)
+    while len(stack2) > 0 and len(stack1) > 0:
+        if stack2[-1] == 'u-':
+            doOperation(stack1.pop(-1), None, stack2[-1], stack1)
+        else:
+            doOperation(stack1.pop(-1), stack1.pop(-1), stack2[-1], stack1)
         stack2.pop(-1)
     return stack1[0]
 
@@ -104,3 +102,7 @@ def get_monomials(equation):
         operation = '+'
     monomials.append([monomial, operation])
     return monomials
+
+
+if __name__ == "__main__":
+    print(count_equation('-(-5)'))
