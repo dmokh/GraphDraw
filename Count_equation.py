@@ -27,6 +27,8 @@ def doOperation(x1, x2, operation, stack1):
         stack1.append(math.tan(x1))
     elif operation == 'ctg':
         stack1.append(math.cos(x1) / math.sin(x1))
+    elif operation == 'log2':
+        stack1.append(math.log2(abs(x1)))
 
 
 def count_equation(equation):
@@ -119,4 +121,4 @@ def get_monomials(equation):
 
 
 if __name__ == "__main__":
-    print(count_equation('tan(5)*cos(5)*sin(5)'))
+    print(count_equation('log2(5.4123413242342)'))
