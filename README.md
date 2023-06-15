@@ -3,8 +3,6 @@
 Программа позволяет строить графики по формуле.
         <h3>Важно!!!</h3>С одной части уравнения из переменных может быть только x, переменная может повтряться сколько угодно раз, а в другой части уравнения только y, причём единожды.
 
-Программа пока не поддерживает взятие корня, функции синуса, косинуса, логирифма и т. п.
-
 <h3>Пользование:</h3>
 Для ввода формулы просто пишите текст, после нажимайте Enter для ввода.
 Для того чтобы посмотреть текущие координаты курсора, кликните правой кнопкой мыши, координаты целые или нет - переключение левой кнопкой.
@@ -14,8 +12,6 @@
 Draw Graphs
 This program draw graphs by function (equation).
         <h3>Attention!!!</h3>Variable can be only x in first part of equation and variable canrepeated any number of times. Variable can be only y in second part and it's can't repeated.
-
-Program can't read take of root, functions of sin, cos, log and etc. now.
 
 <h3>Using:</h3>
 Write text on keyword and press Enter for draw function's graph.
