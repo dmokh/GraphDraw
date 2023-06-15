@@ -21,5 +21,5 @@ Program can't read take of root, functions of sin, cos, log and etc. now.
 
 Using:
 Write text on keyword and press Enter for draw function's graph.
-If you want to watch cooordinates of mouse cursor, you would click RigthMouseButton. If you want to watch coordinates in integers, than you would click LeftButtonMouse.
+If you want to watch cooordinates of mouse cursor, you would click RigthMouseButton. If you want to watch coordinates in integers, than you would click LeftMouseButton.
 Use mouse wheel for change scale.
