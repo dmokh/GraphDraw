@@ -28,11 +28,16 @@ def doOperation(x1, x2, operation, stack1):
     elif operation == 'ctg':
         stack1.append(math.cos(x1) / math.sin(x1))
     elif operation == 'log2':
-        stack1.append(math.log2(abs(x1)))
+        try:
+            stack1.append(math.log2(abs(x1)))
+        except ValueError:
+            stack1.append(math.log2(abs(x1+1)))
     elif operation == 'log':
         base = float(x1.split(',')[0])
         x = float(x1.split(',')[1])
         stack1.append(math.log(abs(x), abs(base)))
+    elif operation == 'abs':
+        stack1.append(abs(x1))
 
 
 def count_equation(equation):
@@ -64,25 +69,34 @@ def count_equation(equation):
                 while len(stack2) > 0 and op[n] <= op[stack2[-1]] < op['(']:
                     if stack2[-1] in unary_op:
                         doOperation(stack1.pop(-1), None, stack2[-1], stack1)
+                        stack2.pop(-1)
                     elif len(stack1) > 1:
                         doOperation(stack1.pop(-1), stack1.pop(-1), stack2[-1], stack1)
-                    stack2.pop(-1)
+                        stack2.pop(-1)
+                    else:
+                        break
             if n == ')':
                 while stack2[-1] != '(':
                     if stack2[-1] in unary_op:
                         doOperation(stack1.pop(-1), None, stack2[-1], stack1)
+                        stack2.pop(-1)
                     elif len(stack1) > 1:
                         doOperation(stack1.pop(-1), stack1.pop(-1), stack2[-1], stack1)
-                    stack2.pop(-1)
+                        stack2.pop(-1)
+                    else:
+                        break
                 stack2.pop(-1)
             elif n == '|':
                 if i > 0 and equation[i-1] not in binary_op:
                     while stack2[-1] != '|':
                         if stack2[-1] in unary_op:
                             doOperation(stack1.pop(-1), None, stack2[-1], stack1)
+                            stack2.pop(-1)
                         elif len(stack1) > 1:
                             doOperation(stack1.pop(-1), stack1.pop(-1), stack2[-1], stack1)
-                        stack2.pop(-1)
+                            stack2.pop(-1)
+                        else:
+                            break
                     stack2.pop(-1)
                     stack1[-1] = abs(stack1[-1])
                 else:
@@ -103,9 +117,12 @@ def count_equation(equation):
     while len(stack2) > 0 and len(stack1) > 0:
         if stack2[-1] in unary_op:
             doOperation(stack1.pop(-1), None, stack2[-1], stack1)
+            stack2.pop(-1)
         elif len(stack1) > 1:
             doOperation(stack1.pop(-1), stack1.pop(-1), stack2[-1], stack1)
-        stack2.pop(-1)
+            stack2.pop(-1)
+        else:
+            break
     return stack1[0]
 
 
@@ -130,4 +147,4 @@ def get_monomials(equation):
 
 
 if __name__ == "__main__":
-    print(count_equation('log2(5)'))
+    print(count_equation('1.00000000000000000000+-0.14000000000010582'))
