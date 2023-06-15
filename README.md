@@ -1,4 +1,4 @@
-<img src="images/screenshot1.png">
+<img src="images/screenshot2.png">
 <pre><p><h1>РУС</h1>
 <h4>Построение Графиков</h4> 
 Программа позволяет строить графики по формуле.
