@@ -47,8 +47,9 @@ def count_equation(equation):
     for i in range(len(equation)):
         n = equation[i]
         if now in op.keys():
-            stack2.append(now)
-            now = ''
+            if now != 'log' or equation[i] != '2':
+                stack2.append(now)
+                now = ''
         if n not in op.keys() or (i > 0 and n == '-' and equation[i-1] == 'e'):
             now += n
         else:
@@ -129,4 +130,4 @@ def get_monomials(equation):
 
 
 if __name__ == "__main__":
-    print(count_equation('log15,4'))
+    print(count_equation('log2(5)'))
