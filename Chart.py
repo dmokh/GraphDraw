@@ -1,7 +1,7 @@
 import time
 
 from utilites import *
-from Count_equation import *
+from Count_equation import count_equation, get_monomials
 
 
 class Chart:

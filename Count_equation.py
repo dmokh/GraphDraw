@@ -29,6 +29,10 @@ def doOperation(x1, x2, operation, stack1):
         stack1.append(math.cos(x1) / math.sin(x1))
     elif operation == 'log2':
         stack1.append(math.log2(abs(x1)))
+    elif operation == 'log':
+        base = float(x1.split(',')[0])
+        x = float(x1.split(',')[1])
+        stack1.append(math.log(abs(x), abs(base)))
 
 
 def count_equation(equation):
@@ -52,6 +56,8 @@ def count_equation(equation):
                 stack1.append(int(now))
             elif isfloat(now) or (len(now) > 1 and isfloat(now[1:])):
                 stack1.append(float(now))
+            elif ',' in now:
+                stack1.append(now)
             now = ''
             if len(stack2) > 0:
                 while len(stack2) > 0 and op[n] <= op[stack2[-1]] < op['(']:
@@ -89,6 +95,8 @@ def count_equation(equation):
         stack1.append(int(now))
     elif isfloat(now) or (len(now) > 1 and isfloat(now[1:])):
         stack1.append(float(now))
+    elif ',' in now:
+        stack1.append(now)
     if now in op.keys():
         stack2.append(now)
     while len(stack2) > 0 and len(stack1) > 0:
@@ -121,4 +129,4 @@ def get_monomials(equation):
 
 
 if __name__ == "__main__":
-    print(count_equation('log2(5.4123413242342)'))
+    print(count_equation('log15,4'))
