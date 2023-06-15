@@ -6,8 +6,9 @@ WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 LIGHT_GRAY = (217, 202, 202)
 RED = (255, 0, 0)
-op = {'+': 1, '-': 1, '*': 2, '/': 2, '^': 2, 'u-': 2, 'cos': 2, 'sin': 2, 'tan': 2, 'ctg': 2, 'log2': 2, 'log': 2, '(': 3, ')': 3, '|': 3}
-unary_op = ['u-', 'sin', 'cos', 'tan', 'ctg', 'log2', 'log']
+op = {'+': 1, '-': 1, '*': 2, '/': 2, '^': 2, 'u-': 2, 'cos': 2, 'sin': 2, 'tan': 2, 'ctg': 2, 'log2': 2, 'log': 2,
+      'abs': 2, '(': 3, ')': 3, '|': 3}
+unary_op = ['u-', 'sin', 'cos', 'tan', 'ctg', 'log2', 'log', 'abs']
 binary_op = ['+', '-', '*', '/', '^']
 Arial_font = pygame.font.SysFont('arial', 20)
 Arial_font_Big = pygame.font.SysFont('arial', 45)

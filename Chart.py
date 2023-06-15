@@ -27,40 +27,84 @@ class Chart:
 
     def draw_formula(self, screen):
         equation_x = self.formula.split('=')[1] if 'y' in self.formula.split("=")[0] else self.formula.split("=")[0]
+        equation_y = self.formula.split('=')[0] if 'y' in self.formula.split("=")[0] else self.formula.split("=")[1]
         time_01 = time.time()
         x = -(self.width // self.scale // 2 + 1)
         while x <= self.width // self.scale // 2 + 1:
             equation_copy = list(equation_x)
+            equation_y_copy = list(equation_y)
             j = 0
             while j < len(equation_copy):
                 if equation_copy[j] == 'x':
                     equation_copy[j] = f'{x}'
                 j += 1
+            j = 0
+            while j < len(equation_y_copy):
+                if equation_y_copy[j] == 'x':
+                    equation_y_copy[j] = f'{x}'
+                j += 1
             y = count_equation(equation_copy)
-            equation_y = self.formula.split('=')[0] if 'y' in self.formula.split("=")[0] else self.formula.split("=")[1]
-            monomials = get_monomials(equation_y)
+            monomials = get_monomials(equation_y_copy)
             equation_right = '{:.20f}'.format(y)
             monomial_with_y = []
             for monomial in monomials:
                 if 'y' not in monomial[0]:
-                    equation_right += monomial[1] + monomial[0]
+                    equation_right += ('+' if monomial[1] == '-' else '-') + monomial[0]
                 else:
                     monomial_with_y.append(monomial)
-            for monomial in monomial_with_y:
+            j = 0
+            while any(list(map(lambda av: '/' in av[0], monomial_with_y))):
+                monomial = monomial_with_y[j]
                 now = ''
                 last_operation = False
+                last_operation_index = 0
+                h = 0
                 for i in monomial[0]:
                     if i != 'y':
                         if i.isdigit() or i == '.':
                             now += i
-                        else:
+                        elif i == '/':
                             if last_operation:
-                                equation_right = '(' + equation_right + ')' + ('*' if last_operation == '/' else '/') \
+                                k = 0
+                                for mon in monomial_with_y:
+                                    if k != j:
+                                        mon[0] += '*' + now
+                                    k += 1
+                                monomial[0] = monomial[0][:last_operation_index] + monomial[0][h+1:]
+                                equation_right = '(' + equation_right + ')' + '*' \
                                                  + now
                                 now = ''
                             last_operation = i
+                            last_operation_index = h
+                    h += 1
                 if now != '':
-                    equation_right = '(' + equation_right + ')' + ('*' if last_operation == '/' else '/') + now
+                    k = 0
+                    for mon in monomial_with_y:
+                        if k != j:
+                            mon[0] += '*' + now
+                        k += 1
+                    monomial[0] = monomial[0][:last_operation_index] + monomial[0][h + 1:]
+                    equation_right = '(' + equation_right + ')' + '*' + now
+                j += 1
+                if j >= len(monomial_with_y):
+                    j = 0
+            c_y = 0
+            for mon in monomial_with_y:
+                now = ''
+                b = 1
+                for i in mon[0]:
+                    if i.isdigit() or i == '.' or i == '-':
+                        now += i
+                    else:
+                        if now != '':
+                            b *= float(now)
+                            now = ''
+                if now != '':
+                    b *= float(now)
+                    now = ''
+                c_y = c_y + (float(b) if mon[1] == '+' else -float(b))
+                print(c_y)
+            equation_right = '(' + equation_right + ')' + '/' + str(c_y)
             y = count_equation(list(equation_right))
             pygame.draw.circle(screen, BLACK, (self.width // self.scale // 2 * self.scale + x * self.scale,
                                                self.height // self.scale // 2 * self.scale + self.top_border -

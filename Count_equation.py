@@ -130,8 +130,9 @@ def get_monomials(equation):
     monomials = []
     monomial = ''
     operation = ''
+    i = 0
     for s in equation:
-        if s == '+' or s == '-':
+        if s == '+' or (s == '-' and i > 0 and equation[i-1] not in op.keys()):
             if operation == '':
                 monomials.append([monomial, '+'])
             else:
@@ -140,6 +141,7 @@ def get_monomials(equation):
             monomial = ''
         else:
             monomial += s
+        i += 1
     if operation == '':
         operation = '+'
     monomials.append([monomial, operation])
@@ -147,4 +149,4 @@ def get_monomials(equation):
 
 
 if __name__ == "__main__":
-    print(count_equation('1.00000000000000000000+-0.14000000000010582'))
+    print(count_equation('((0.00000000000000000000--0.8450000000001064)/2)*4'))

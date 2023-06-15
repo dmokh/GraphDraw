@@ -1,8 +1,6 @@
-import time
-import pygame
 import Chart
-from Count_equation import *
 from utilites import *
+import win32clipboard
 pygame.init()
 pygame.font.init()
 
@@ -10,10 +8,10 @@ size = (1000, 750)
 top_border = 50
 screen = pygame.display.set_mode(size)
 if __name__ == "__main__":
-    graph_one = Chart.Chart("x=y", scales[5], size[0], size[1]-top_border, top_border)
+    graph_one = Chart.Chart("x+y/3-y*2=0", scales[5], size[0], size[1]-top_border, top_border)
     position = False
     integer = False
-    formula = "x=y"
+    formula = "x+y/3-y*2=0"
     now_pos_of_text = 3
     while True:
         graph_one.draw_base(screen)
@@ -51,6 +49,15 @@ if __name__ == "__main__":
                     now_pos_of_text = max(0, now_pos_of_text - 1)
                 elif e.key == pygame.K_RIGHT:
                     now_pos_of_text = min(now_pos_of_text + 1, len(formula))
+                elif e.mod and pygame.KMOD_CTRL and e.key == pygame.K_v:
+                    win32clipboard.OpenClipboard()
+                    formula += win32clipboard.GetClipboardData()
+                    win32clipboard.CloseClipboard()
+                    now_pos_of_text = len(formula)
+                elif e.mod and pygame.KMOD_CTRL and e.key == pygame.K_DELETE:
+                    formula = 'x=y'
+                    graph_one.formula = formula
+                    now_pos_of_text = 3
                 elif e.mod and pygame.KMOD_SHIFT:
                     if e.unicode != '':
                         formula = formula[0:now_pos_of_text-1] + e.unicode + formula[now_pos_of_text-1:]
