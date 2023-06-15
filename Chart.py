@@ -1,6 +1,5 @@
 import time
 
-from Draw import *
 from utilites import *
 from Count_equation import *
 
@@ -56,7 +55,8 @@ class Chart:
                             now += i
                         else:
                             if last_operation:
-                                equation_right = '(' + equation_right + ')' + ('*' if last_operation == '/' else '/') + now
+                                equation_right = '(' + equation_right + ')' + ('*' if last_operation == '/' else '/') \
+                                                 + now
                                 now = ''
                             last_operation = i
                 if now != '':
