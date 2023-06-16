@@ -128,25 +128,84 @@ def count_equation(equation):
 
 def get_monomials(equation):
     monomials = []
-    monomial = ''
-    operation = ''
-    i = 0
-    for s in equation:
-        if s == '+' or (s == '-' and i > 0 and equation[i-1] not in op.keys()):
-            if operation == '':
-                monomials.append([monomial, '+'])
+    now = ''
+    in_parenthesis = False
+    in_bracket = False
+    c_br_op = 0
+    c_br_cl = 0
+    c_par_op = 0
+    c_par_cl = 0
+    last_op = '+'
+    for i in range(len(equation)):
+        n = equation[i]
+        if n in op.keys() or now in op.keys():
+            if (n == '-' or n == '+') and not in_parenthesis and not in_bracket:
+                monomials.append([now, last_op])
+                now = ''
+                last_op = n
+            elif n == '(':
+                now += n
+                in_parenthesis = True
+                c_par_op += 1
+            elif n == ')':
+                now += n
+                c_par_cl += 1
+                if c_par_op == c_par_cl:
+                    in_parenthesis = False
+            elif n == '|':
+                now += n
+                if i > 0 and equation[i-1] not in binary_op:
+                    c_br_cl += 1
+                    if c_br_cl == c_br_op:
+                        in_bracket = False
+                else:
+                    c_br_op += 1
+                    in_bracket = True
             else:
-                monomials.append([monomial, operation])
-            operation = s
-            monomial = ''
+                now += n
         else:
-            monomial += s
-        i += 1
-    if operation == '':
-        operation = '+'
-    monomials.append([monomial, operation])
+            now += n
+    if now != '':
+        monomials.append([now, last_op])
+    i = 0
+    while any(list(map(lambda x: '+' in x[0] or '-' in x[0], monomials))):
+        if '(' not in monomials[i][0] and '|' not in monomials[i][0]:
+            i += 1
+            continue
+        mon = monomials[i][0]
+        j = 0
+        while j < len(mon) and mon[j] != '|' and mon[j] != '(':
+            j += 1
+        operation = ''
+        now = ''
+        for h in range(j-1, -1, -1):
+            if mon[h] in op.keys():
+                if operation != '':
+                    mon += operation + now
+                    now = ''
+                operation = mon[h]
+            else:
+                now = mon[h] + now
+        if now != '':
+            mon += operation + now
+        mon = mon[j:]
+        if mon[0] == '(':
+            k = len(mon) - 1
+            while k > 0 and mon[k] != ')':
+                k -= 1
+        else:
+            k = len(mon) - 1
+            while k > 0 and mon[k] != '|':
+                k -= 1
+        for monomial_from in get_monomials(mon[1:k]):
+            if mon[0] == '(':
+                monomials.append([monomial_from[0]+mon[k+1:], monomials[i][1]])
+            else:
+                monomials.append(['|' + monomial_from[0] + mon[k + 1:] + '|', monomials[i][1]])
+        monomials.pop(i)
     return monomials
 
 
 if __name__ == "__main__":
-    print(count_equation('((0.00000000000000000000--0.8450000000001064)/2)*4'))
+    s = 'y^2-|78+y*(78+6-x)|-|x*7|'
+    print(get_monomials(s))
