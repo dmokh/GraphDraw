@@ -8,11 +8,11 @@ size = (1000, 750)
 top_border = 50
 screen = pygame.display.set_mode(size)
 if __name__ == "__main__":
-    graph_one = Chart.Chart("x+y/3-y*2=0", scales[5], size[0], size[1]-top_border, top_border)
+    graph_one = Chart.Chart("x=y", scales[5], size[0], size[1]-top_border, top_border)
     position = False
     integer = False
-    formula = "x+y/3-y*2=0"
-    now_pos_of_text = 3
+    formula = "x=y"
+    now_pos_of_text = len(formula)
     while True:
         graph_one.draw_base(screen)
         graph_one.draw_formula(screen)

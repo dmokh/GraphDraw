@@ -103,7 +103,6 @@ class Chart:
                     b *= float(now)
                     now = ''
                 c_y = c_y + (float(b) if mon[1] == '+' else -float(b))
-                print(c_y)
             equation_right = '(' + equation_right + ')' + '/' + str(c_y)
             y = count_equation(list(equation_right))
             pygame.draw.circle(screen, BLACK, (self.width // self.scale // 2 * self.scale + x * self.scale,
