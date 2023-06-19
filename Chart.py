@@ -47,14 +47,12 @@ class Chart:
             monomials = get_monomials(equation_y_copy)
             equation_right = '{:.20f}'.format(y)
             monomial_with_y = []
-            print(y)
             for monomial in monomials:
                 if 'y' not in monomial[0]:
                     equation_right += ('+' if monomial[1] == '-' else '-') + monomial[0]
                 else:
                     monomial_with_y.append(monomial)
             j = 0
-            print(monomials)
             while any(list(map(lambda av: '/' in av[0], monomial_with_y))):
                 monomial = monomial_with_y[j]
                 now = ''
