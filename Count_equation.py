@@ -167,17 +167,19 @@ def get_monomials(equation):
             now += n
     if now != '':
         monomials.append([now, last_op])
+    print(monomials)
     i = 0
-    while any(list(map(lambda x: ('+' in x[0] or '-' in x[0]) and ('(' in x[0] or '|' in x[0]), monomials))):
+    while i < len(monomials):
         if '(' not in monomials[i][0] and '|' not in monomials[i][0]:
             i += 1
-            if i == len(monomials):
-                i = 0
             continue
         mon = monomials[i][0]
         j = 0
-        while j < len(mon) and mon[j] != '|' and mon[j] != '(':
+        while j < len(mon) and ((mon[j] != '|' and mon[j] != '(') or mon[j-3:j] in unary_op):
             j += 1
+        if j == len(mon):
+            i += 1
+            continue
         operation = ''
         now = ''
         for h in range(j):
@@ -214,15 +216,18 @@ def get_monomials(equation):
             k -= 1
         for monomial_from in get_monomials(mon[1:k]):
             if mon[0] == '(':
+                if len(mon[k+1:]) > 0 and mon[k+1:][0] == '^':
+                    monomials.append(mon)
+                    break
                 monomials.append([monomial_from[0]+mon[k+1:], monomials[i][1]])
             else:
                 monomials.append(['|' + monomial_from[0] + mon[k + 1:] + '|', monomials[i][1]])
         monomials.pop(i)
-        if i == len(monomials):
-            i = 0
+        i = (0 if monomials[-1] != mon else i + 1)
     return monomials
 
 
 if __name__ == "__main__":
-    s = '(x^2)*(y+4)'
+    s = '((2*y)*7+(x+8))^4'
+    print(count_equation("(6-7)*54*6+(9-7)*(-9)"))
     print(get_monomials(s))
